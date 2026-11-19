@@ -56,12 +56,34 @@ Some features require additional configuration. Check with the project mentors f
 
 Do not commit private API keys or credentials. Values included in browser JavaScript are visible to visitors.
 
+### Run the Flask API Locally
+
+From the repository root, use Python 3.10 or newer. In PowerShell, run:
+
+```powershell
+python -m venv backend/.venv
+.\backend\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
+.\backend\.venv\Scripts\python.exe -m flask --app backend.app run
+```
+
+The Flask development server listens on `127.0.0.1:5000`. In a second PowerShell window, check the server and send eight requests in quick succession:
+
+```powershell
+curl.exe -i http://127.0.0.1:5000/api/health
+1..8 | ForEach-Object { curl.exe -i http://127.0.0.1:5000/api/rate-limit-demo }
+```
+
+`/api/health` returns HTTP 200 and uses no tokens. The demo starts each client IP with five tokens, spends one per request, and refills one every two seconds up to five. After the initial burst, requests return HTTP 429 with a `Retry-After` header until another token is available. The bucket is stored in memory for a single Flask process and resets when that process restarts.
+
+The existing frontend still runs with `npx serve .`. To apply this limit to AI requests, move the upstream calls into a Flask route and have the browser call that route. A production deployment with multiple workers would need shared bucket state, such as Redis.
+
 ## Project Structure
 
 | File or Folder | Purpose |
 | --- | --- |
 | `index.html` | Site entry page |
 | `app.html` | Application page |
+| `backend/` | Local Flask API and token-bucket limiter |
 | `frontend/` | Frontend components and assets |
 | `perception/` | Webcam, gaze, and audio processing |
 | `integration/` | Integration code |

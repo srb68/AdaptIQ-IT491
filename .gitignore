@@ -1,2 +1,4 @@
 .firebase/
 config.js
+backend/.venv/
+__pycache__/
