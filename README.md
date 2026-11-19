@@ -52,6 +52,8 @@ npx serve .
 
 Open the local URL shown in your terminal. Allow camera and microphone access when testing features that need them.
 
+For Google sign-in, open the app using `localhost` as the hostname and keep the port shown in the terminal. For example, with the Firebase Hosting emulator, open `http://localhost:5000/app.html`. The team's Firebase project rejects sign-in from `127.0.0.1` with `auth/unauthorized-domain`.
+
 Some features require additional configuration. Check with the project mentors for the approved setup and review `config.example.js`.
 
 Do not commit private API keys or credentials. Values included in browser JavaScript are visible to visitors.

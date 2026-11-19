@@ -1046,6 +1046,7 @@ window.AdaptIQ_UI = (() => {
   // SESSION SUMMARY
   // ============================================================
   function showSummary(data) {
+    document.getElementById('summary-export-error').textContent = '';
     showScreen('summary');
 
     document.getElementById('summary-grade').textContent    = data.grade || '—';
@@ -1079,14 +1080,18 @@ window.AdaptIQ_UI = (() => {
 
   async function exportReport() {
     const btn = document.getElementById('btn-export');
-    if (btn) { btn.textContent = 'Generating…'; btn.disabled = true; }
+    const errorMessage = document.getElementById('summary-export-error');
+    errorMessage.textContent = '';
+    btn.textContent = 'Generating…';
+    btn.disabled = true;
     try {
       await generatePDF();
+    } catch (err) {
+      console.error('[PDF] Report export failed:', err);
+      errorMessage.textContent = 'Couldn’t download your PDF report. Your results are still visible here.';
     } finally {
-      if (btn) {
-        btn.innerHTML = '<i class="ti ti-download"></i> Download PDF Report';
-        btn.disabled = false;
-      }
+      btn.innerHTML = '<i class="ti ti-download"></i> Download PDF Report';
+      btn.disabled = false;
     }
   }
 
@@ -1157,8 +1162,7 @@ window.AdaptIQ_UI = (() => {
   // ============================================================
   async function generatePDF() {
     if (!window.jspdf) {
-      console.warn('[PDF] jsPDF not loaded');
-      return;
+      throw new Error('jsPDF not loaded');
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'pt', format: 'letter' });

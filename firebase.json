@@ -16,12 +16,6 @@
       "firestore.rules",
       "firestore.indexes.json",
       "storage.rules"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
     ]
   },
   "firestore": {
